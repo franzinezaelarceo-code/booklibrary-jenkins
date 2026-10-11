@@ -3,9 +3,10 @@ pipeline {
     agent any
 
     environment {
-    IMAGE_NAME = 'book-library-system'
-    DOCKER = 'C:\\Users\\Arceo\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin\\docker.exe'
-}
+        IMAGE_NAME = 'book-library-system'
+        DOCKER = 'C:\\Users\\Arceo\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin\\docker.exe'
+        COMPOSE = 'C:\\Users\\Arceo\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin\\docker-compose.exe'
+    }
 
     stages {
         stage('Checkout') {
@@ -19,15 +20,15 @@ pipeline {
                 bat 'node --version'
                 bat 'npm --version'
                 bat '"%DOCKER%" --version'
-                bat '"%DOCKER%" compose version'
+                bat '"%COMPOSE%" version'
             }
         }
 
         stage('Run Tests') {
             steps {
-                bat '"%DOCKER%" compose down --remove-orphans'
-                bat '"%DOCKER%" compose up -d database'
-                bat '"%DOCKER%" compose run --rm --build --user root web sh -c "npm install --include=dev && npm test"'
+                bat '"%COMPOSE%" down --remove-orphans'
+                bat '"%COMPOSE%" up -d database'
+                bat '"%COMPOSE%" run --rm --build --user root web sh -c "npm install --include=dev && npm test"'
             }
         }
 
@@ -40,13 +41,13 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                bat '"%DOCKER%" compose up -d --build'
+                bat '"%COMPOSE%" up -d --build'
             }
         }
 
         stage('Smoke Test') {
             steps {
-                bat '"%DOCKER%" compose ps'
+                bat '"%COMPOSE%" ps'
                 bat 'curl.exe --fail http://localhost:8082/health'
             }
         }
@@ -54,7 +55,7 @@ pipeline {
 
     post {
         always {
-            bat 'docker compose ps'
+            bat '"%COMPOSE%" ps'
         }
     }
 }
