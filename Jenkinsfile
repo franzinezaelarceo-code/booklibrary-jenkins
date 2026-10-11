@@ -3,8 +3,9 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = 'book-library-system'
-    }
+    IMAGE_NAME = 'book-library-system'
+    DOCKER = 'C:\\Users\\Arceo\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin\\docker.exe'
+}
 
     stages {
         stage('Checkout') {
@@ -17,7 +18,7 @@ pipeline {
             steps {
                 bat 'node --version'
                 bat 'npm --version'
-                bat 'docker --version'
+                bat '"%DOCKER%" --version'
                 bat 'docker compose version'
             }
         }
