@@ -1,3 +1,4 @@
+
 pipeline {
     agent any
 
@@ -12,46 +13,47 @@ pipeline {
             }
         }
 
-        stage('Install Dependencies') {
+        stage('Check Tools') {
             steps {
-                sh 'npm install'
+                bat 'node --version'
+                bat 'npm --version'
+                bat 'docker --version'
+                bat 'docker compose version'
             }
         }
 
         stage('Run Tests') {
             steps {
-                sh 'docker compose down --remove-orphans || true'
-                sh 'docker compose up -d database'
-                sh 'until [ "$(docker inspect -f "{{.State.Health.Status}}" $(docker compose ps -q database))" = "healthy" ]; do echo "Waiting for PostgreSQL..."; sleep 2; done'
-                sh 'docker compose run --rm --build --user root web sh -c "npm install --include=dev && npm test"'
+                bat 'docker compose down --remove-orphans'
+                bat 'docker compose up -d database'
+                bat 'docker compose run --rm --build --user root web sh -c "npm install --include=dev && npm test"'
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t ${IMAGE_NAME}:${BUILD_NUMBER} .'
-                sh 'docker tag ${IMAGE_NAME}:${BUILD_NUMBER} ${IMAGE_NAME}:latest'
+                bat 'docker build -t %IMAGE_NAME%:%BUILD_NUMBER% .'
+                bat 'docker tag %IMAGE_NAME%:%BUILD_NUMBER% %IMAGE_NAME%:latest'
             }
         }
 
         stage('Deploy') {
             steps {
-                sh 'docker compose down --remove-orphans || true'
-                sh 'docker compose up -d --build'
+                bat 'docker compose up -d --build'
             }
         }
 
         stage('Smoke Test') {
             steps {
-                sh 'docker compose ps'
-                sh 'curl --fail http://host.docker.internal:8082/health'
+                bat 'docker compose ps'
+                bat 'curl.exe --fail http://localhost:8082/health'
             }
         }
     }
 
     post {
         always {
-            sh 'docker compose ps || true'
+            bat 'docker compose ps'
         }
     }
 }
