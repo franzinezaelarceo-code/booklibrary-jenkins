@@ -2,11 +2,14 @@
 pipeline {
     agent any
 
-    environment {
-        IMAGE_NAME = 'book-library-system'
-        DOCKER = 'C:\\Users\\Arceo\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin\\docker.exe'
-        COMPOSE = 'C:\\Users\\Arceo\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin\\docker-compose.exe'
-    }
+   
+environment {
+    IMAGE_NAME = 'book-library-system'
+    NGINX_PORT = '8084'
+    DOCKER = 'C:\\Users\\Arceo\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin\\docker.exe'
+    COMPOSE = 'C:\\Users\\Arceo\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin\\docker-compose.exe'
+}
+
 
     stages {
         stage('Checkout') {
