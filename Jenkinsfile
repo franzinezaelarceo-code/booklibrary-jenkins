@@ -53,7 +53,7 @@ stage('Deploy') {
         stage('Smoke Test') {
             steps {
                 bat '"%COMPOSE%" ps'
-                bat 'curl.exe --fail http://localhost:8083/health'
+                bat 'curl.exe --fail http://localhost:8084/health'
             }
         }
     }
