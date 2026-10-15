@@ -43,12 +43,13 @@ environment {
         }
 
        
-stage('Deploy') {
+          
+               
+          stage('Deploy') {
     steps {
-        bat 'set NGINX_PORT=8084&& "%COMPOSE%" up -d --build'
+        bat 'set "NGINX_PORT=8084" && "%COMPOSE%" up -d --build'
     }
 }
-
 
         stage('Smoke Test') {
             steps {
