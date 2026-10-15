@@ -2,4 +2,6 @@ node_modules/
 .env
 coverage/
 *.log
-.DS_Store
+.DS_Store*.backup
+*.zip
+me
